@@ -1,7 +1,7 @@
 # Troubleshooting Guide
 
 Common issues and solutions for Everything Claude Code (ECC) plugin.
-
+2
 ## Table of Contents
 
 - [Memory & Context Issues](#memory--context-issues)
