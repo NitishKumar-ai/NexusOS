@@ -13,7 +13,6 @@ Common issues and solutions for Everything Claude Code (ECC) plugin.
 - [Getting Help](#getting-help)
 
 ---
-
 ## Memory & Context Issues
 
 ### Context Window Overflow
