@@ -20,14 +20,35 @@ export default function LiveFeed() {
       type: 'success',
     },
   ]);
+  const [status, setStatus] = useState<'CONNECTED' | 'DISCONNECTED' | 'RECONNECTING'>('DISCONNECTED');
+
+  useEffect(() => {
+    const ws = new WebSocket('ws://localhost:3000/ws');
+
+    ws.onopen = () => setStatus('CONNECTED');
+    ws.onclose = () => setStatus('DISCONNECTED');
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      const newLog: LogEntry = {
+        id: Math.random().toString(36).substr(2, 9),
+        phase: data.phase,
+        message: data.message,
+        timestamp: new Date(data.timestamp).toLocaleTimeString(),
+        type: 'info',
+      };
+      setLogs(prev => [newLog, ...prev]);
+    };
+
+    return () => ws.close();
+  }, []);
 
   return (
     <div className="w-full max-w-4xl mx-auto mt-12 px-4">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-gradient">Live Mission Stream</h2>
         <div className="flex items-center gap-2 text-xs text-white/50 bg-white/5 px-3 py-1 rounded-full border border-white/10">
-          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-          CONNECTED TO AGENT
+          <div className={`w-2 h-2 rounded-full animate-pulse ${status === 'CONNECTED' ? 'bg-green-500' : 'bg-red-500'}`}></div>
+          {status} TO AGENT
         </div>
       </div>
       

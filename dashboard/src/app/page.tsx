@@ -1,5 +1,6 @@
 import CommandBar from "@/components/CommandBar";
 import LiveFeed from "@/components/LiveFeed";
+import AuditLog from "@/components/AuditLog";
 
 export default function Home() {
   return (
@@ -7,14 +8,18 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-6">
         {/* Header Section */}
         <div className="text-center mb-16 space-y-4">
-          <div className="inline-block px-4 py-1.5 rounded-full glass-accent text-violet-400 text-xs font-bold tracking-widest uppercase mb-4">
-            v2.0 Beta • Mission Control
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold tracking-widest uppercase mb-4 animate-fade-in">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            System Operational
           </div>
           <h1 className="text-6xl font-extrabold tracking-tight text-gradient sm:text-7xl">
             NexusOS
           </h1>
           <p className="max-w-2xl mx-auto text-xl text-white/50 font-medium leading-relaxed">
-            The event-driven agent mission control for high-bandwidth engineering.
+            Strategic Agent Orchestration & Real-time Mission Control
           </p>
         </div>
 
@@ -23,6 +28,9 @@ export default function Home() {
 
         {/* Live Feed */}
         <LiveFeed />
+
+        {/* Audit Log */}
+        <AuditLog />
         
         {/* Footer */}
         <div className="mt-32 text-center text-white/20 text-xs font-medium uppercase tracking-[0.2em]">

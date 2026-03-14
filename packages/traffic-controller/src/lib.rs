@@ -2,7 +2,7 @@ pub mod models {
     use serde::{Deserialize, Serialize};
     use uuid::Uuid;
 
-    #[derive(Debug, Serialize, Deserialize)]
+    #[derive(Debug, Serialize, Deserialize, Clone)]
     pub struct Task {
         pub id: Uuid,
         pub instruction: String,
@@ -21,5 +21,13 @@ pub mod models {
         P6Review,
         P7Delivery,
         P8Approval,
+    }
+
+    #[derive(Debug, Serialize, Deserialize, Clone)]
+    pub struct MissionEvent {
+        pub task_id: Uuid,
+        pub phase: Phase,
+        pub message: String,
+        pub timestamp: String,
     }
 }

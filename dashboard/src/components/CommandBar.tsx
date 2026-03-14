@@ -4,11 +4,27 @@ import { useState } from 'react';
 
 export default function CommandBar() {
   const [command, setCommand] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Sending command:', command);
-    setCommand('');
+    if (!command.trim()) return;
+
+    setIsLoading(true);
+    try {
+      const response = await fetch('http://localhost:3000/api/v1/agents/coder/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ instruction: command }),
+      });
+      const data = await response.json();
+      console.log('Task accepted:', data);
+      setCommand('');
+    } catch (err) {
+      console.error('Failed to trigger agent:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -26,9 +42,10 @@ export default function CommandBar() {
         />
         <button
           type="submit"
-          className="bg-violet-600 hover:bg-violet-500 text-white px-5 py-2.5 rounded-xl font-medium transition-colors duration-200 flex items-center gap-2"
+          disabled={isLoading}
+          className={`bg-violet-600 hover:bg-violet-500 text-white px-5 py-2.5 rounded-xl font-medium transition-colors duration-200 flex items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
-          Execute
+          {isLoading ? 'Triggering...' : 'Execute'}
         </button>
       </form>
       <div className="mt-4 flex gap-4 justify-center text-xs text-white/40 uppercase tracking-widest font-semibold">
