@@ -6,6 +6,12 @@ build/
 out/
 .env
 .env.*
+.env.local
+
+# Runtime artifacts
+.temp_clones/
+nexusos.db
+*.db
 
 # Rust
 target/

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createWebSocket, type MissionEvent } from '../../lib/gateway';
 
 interface LogEntry {
   id: string;
@@ -23,21 +24,19 @@ export default function LiveFeed() {
   const [status, setStatus] = useState<'CONNECTED' | 'DISCONNECTED' | 'RECONNECTING'>('DISCONNECTED');
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:3000/ws');
-
-    ws.onopen = () => setStatus('CONNECTED');
-    ws.onclose = () => setStatus('DISCONNECTED');
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
+    const ws = createWebSocket((event: MissionEvent) => {
       const newLog: LogEntry = {
         id: Math.random().toString(36).substr(2, 9),
-        phase: data.phase,
-        message: data.message,
-        timestamp: new Date(data.timestamp).toLocaleTimeString(),
+        phase: event.phase,
+        message: event.message,
+        timestamp: new Date(event.timestamp).toLocaleTimeString(),
         type: 'info',
       };
       setLogs(prev => [newLog, ...prev]);
-    };
+    });
+
+    ws.onopen = () => setStatus('CONNECTED');
+    ws.onclose = () => setStatus('DISCONNECTED');
 
     return () => ws.close();
   }, []);

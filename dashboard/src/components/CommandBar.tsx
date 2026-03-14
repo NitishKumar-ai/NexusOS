@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { submitMission } from '../../lib/gateway';
 
 export default function CommandBar() {
   const [command, setCommand] = useState<string>('');
@@ -12,12 +13,7 @@ export default function CommandBar() {
 
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:3000/api/v1/agents/coder/run', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ instruction: command }),
-      });
-      const data = await response.json();
+      const data = await submitMission({ instruction: command });
       console.log('Task accepted:', data);
       setCommand('');
     } catch (err) {

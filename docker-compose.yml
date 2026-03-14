@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   core-gateway:
-    build: ./packages/core-gateway
+    build: ./packages/traffic-controller
     ports:
       - "3000:3000"
     environment:

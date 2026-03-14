@@ -1,0 +1,13 @@
+{
+  "name": "@nexusos/channels",
+  "version": "1.0.0",
+  "description": "NexusOS unified channel adapters — Discord, Telegram, WhatsApp",
+  "private": true,
+  "main": "./index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { listMissions } from '../../lib/gateway';
 
 interface MissionTask {
   id: string;
@@ -22,8 +23,7 @@ export default function AuditLog() {
 
   const fetchMissions = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/v1/missions');
-      const data = await response.json();
+      const data = await listMissions();
       setMissions(data);
     } catch (err) {
       console.error('Failed to fetch mission history:', err);

@@ -63,11 +63,22 @@ pub async fn execute_mission(
             let success = if path.exists() {
                 // Pull
                 let _ = tx.send(MissionEvent { task_id: current_task.id, phase: Phase::P1ContextPull, message: format!("Directory {} exists. Executing git pull...", dir), timestamp: chrono::Utc::now().to_rfc3339() });
-                Command::new("git").current_dir(dir).arg("pull").output().map(|o| o.status.success()).unwrap_or(false)
+                let output = Command::new("git").current_dir(dir).arg("pull").output().expect("Failed to execute git");
+                if !output.status.success() {
+                    println!("Git Pull Error: {}", String::from_utf8_lossy(&output.stderr));
+                }
+                output.status.success()
             } else {
                 // Clone
+                if let Some(parent) = path.parent() {
+                    let _ = std::fs::create_dir_all(parent);
+                }
                 let _ = tx.send(MissionEvent { task_id: current_task.id, phase: Phase::P1ContextPull, message: format!("Directory {} does not exist. Executing git clone...", dir), timestamp: chrono::Utc::now().to_rfc3339() });
-                Command::new("git").arg("clone").arg(repo_url).arg(dir).output().map(|o| o.status.success()).unwrap_or(false)
+                let output = Command::new("git").arg("clone").arg(repo_url).arg(dir).output().expect("Failed to execute git");
+                if !output.status.success() {
+                    println!("Git Clone Error: {}", String::from_utf8_lossy(&output.stderr));
+                }
+                output.status.success()
             };
 
             if success {

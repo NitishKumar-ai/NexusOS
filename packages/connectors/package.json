@@ -1,0 +1,13 @@
+{
+  "name": "@nexusos/connectors",
+  "version": "1.0.0",
+  "description": "NexusOS MCP connector stubs — Linear, Firebase, Figma, GitHub",
+  "private": true,
+  "main": "./index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

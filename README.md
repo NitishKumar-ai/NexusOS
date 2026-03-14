@@ -1,111 +1,102 @@
 # NexusOS Agent Pipeline
 
-NexusOS is a systematic, event-driven **Agent Mission Control** system that lets a developer (or small team) remotely command, monitor, and orchestrate AI agents. The system autonomously pulls code from GitHub, executes tasks through a defined P0-P8 pipeline, and delivers outputs directly to your phone (Telegram/PWA) and web dashboard.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0--beta-blue)](docs/prd.md)
+
+NexusOS is an enterprise-grade, event-driven **Agent Mission Control** system designed for high-performance orchestration of autonomous AI agents. It provides a centralized control plane for commanding, monitoring, and securing agents across diverse environments—from local development to cloud-scale deployments.
+
+## 🌟 Why NexusOS?
+
+NexusOS solves the fragmentation and visibility challenges of modern AI agent workflows:
+- **Centralized Command**: A unified gateway (Traffic Controller) to route tasks to specialized agents.
+- **Remote Visibility**: Real-time observability via WebSockets and direct-to-phone notifications (Telegram/PWA).
+- **Hardened Security**: The `AgentShield` framework enforces granular security rules and human-in-the-loop approvals.
+- **Systematic Execution**: A strict P0-P8 pipeline ensures predictable outcomes and verification.
+
+---
+
+## 🏗️ High-Level Architecture
+
+```mermaid
+graph TD
+    User([User: Phone/Web/CLI]) --> Gateway[NexusOS Traffic Controller - Rust]
+    Gateway --> Pipeline[P0-P8 Phase Runner]
+    Pipeline --> Agents[NexusOS Agent Harness]
+    
+    subgraph "Agent Harness"
+        Agents --> Planner
+        Agents --> Architect
+        Agents --> Coder
+    end
+    
+    Pipeline --> MCP[MCP Connectors: Linear/GitHub/Figma]
+    Pipeline --> Delivery[Delivery: Telegram/WebSocket/PWA]
+    
+    style Gateway fill:#f9f,stroke:#333,stroke-width:2px
+    style Pipeline fill:#bbf,stroke:#333,stroke-width:2px
+```
 
 ---
 
 ## 📁 Project Structure
 
-This project is organized as a **pnpm monorepo** for tight integration between the gateway, agent logic, and frontend.
+NexusOS is organized as a **pnpm monorepo** for optimal dependency management and internal integration.
 
 ```text
 nexusos/
-├── dashboard/                 # Next.js 14 Web UI (Perplexity-inspired)
-├── docs/                      # Comprehensive Wiki & Documentation
+├── docs/                      # Centralized Wiki, Architecture, and PRD
 ├── packages/
-│   ├── traffic-controller/    # Rust (Axum/Tokio) Gateway & Orchestration Layer
-│   │   ├── src/agent.rs       # Agent invocation logic (Claude CLI bridge)
-│   │   ├── src/lib.rs         # Shared models & Git/Notification logic
-│   │   └── src/main.rs        # API Endpoints, WebSockets, & Phase Runner
-│   ├── agent-harness/         # Everything-Claude-Code (ECC) Agent Logic
-│   │   ├── agents/            # Specialized agent definitions (Planner, Architect, etc.)
-│   │   ├── skills/            # Reusable agent skills
-│   │   └── scripts/           # CLI wrappers & session management
-│   ├── sdk-bridge/            # Adapter for external SDK integration
-│   └── connectors/            # MCP Connectors (Linear, Firebase, Figma)
-├── docker-compose.yml         # Local infrastructure (Postgres, Redis)
-├── package.json               # Root workspace configuration
-└── prd.md                     # Detailed Product Requirements Document
+│   ├── traffic-controller/    # High-performance Rust (Axum) Gateway
+│   ├── agent-harness/         # Core agent definitions and skills
+│   ├── sdk-bridge/            # Adapters for custom engine integration
+│   └── connectors/            # Model Context Protocol (MCP) implementations
+├── dashboard/                 # Next.js 14 Real-time Observability UI
+└── docker-compose.yml         # Local infrastructure (Persistence & Cache)
 ```
-
-### Key Components
-
-- **`traffic-controller`**: The heart of the system. Written in Rust for high performance and safety. It manages the P0-P8 state machine, SQLite audit logs, and real-time WebSocket broadcasting.
-- **`agent-harness`**: Powered by Everything-Claude-Code. It contains the instructions and logic for specialized AI agents that act as your digital workers.
-- **`dashboard`**: The visual control plane. Allows you to monitor live streams, resolve blockers, and view task history.
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Quick Start
 
-### Prerequisites
-
-- **Rust**: Latest stable version installed.
-- **Node.js**: v18 or higher.
+### 1. Prerequisites
+- **Rust** (Stable) & **Node.js** (v18+)
 - **pnpm**: `npm install -g pnpm`
-- **Claude CLI**: `npm install -g @anthropic-ai/claude-code` (and run `/login`)
-- **SQLite**: For the audit log.
+- **Claude CLI**: `npm install -g @anthropic-ai/claude-code`
 
-### Environment Setup
-
-1. Copy the example environment file in the gateway:
-   ```bash
-   cp packages/traffic-controller/.env.example packages/traffic-controller/.env
-   ```
-2. Edit `.env` and provide your **Telegram Bot Token** and **Chat ID** for phone notifications.
-
----
-
-## 🛠️ Running the Application
-
-### 1. Start the Infrastructure
-Use Docker to spin up any required services (Postgres/Redis if configured):
+### 2. Installation
 ```bash
-docker-compose up -d
+git clone https://github.com/Inmodel/NexusOS.git
+cd NexusOS
+pnpm install
 ```
 
-### 2. Start the Traffic Controller (Gateway)
-Navigate to the package and run the Rust server:
+### 3. Launch
 ```bash
+# Start infrastructure
+docker-compose up -d
+
+# Start the Traffic Controller
 cd packages/traffic-controller
 cargo run
 ```
-The server will start on `http://127.0.0.1:3000`.
-
-### 3. Start the Dashboard
-(Work in Progress - Week 4)
-```bash
-cd dashboard
-pnpm dev
-```
-
-### 4. Trigger a Task
-You can trigger the pipeline manually via `curl` to test the P0-P2 flow:
-```bash
-curl -X POST http://127.0.0.1:3000/api/v1/agents/coder/run \
-  -H "Content-Type: application/json" \
-  -d '{
-    "instruction": "Add a health check to the server",
-    "repo_url": "https://github.com/rust-lang/rust-installer.git"
-  }'
-```
-
-### 5. Monitor Live Stream
-Connect to the WebSocket to see real-time agent reasoning:
-```bash
-# Using the provided test script
-node test_ws.js
-```
 
 ---
 
-## 📖 Documentation
+## 📖 Key Documentation
 
-For in-depth details on the architecture, execution pipeline, and security model, please refer to the **[Code Wiki](./docs/Home.md)** or the **[Full PRD](./prd.md)**.
+- **[Architecture Deep Dive](docs/Architecture.md)**: Component interactions and data flow.
+- **[Execution Pipeline](docs/Execution-Pipeline.md)**: Detailed breakdown of the P0-P8 lifecycle.
+- **[Product Requirements (PRD)](docs/prd.md)**: The definitive roadmap and feature specification.
+- **[Security Model](docs/Security.md)**: AgentShield and Human-in-the-Loop governance.
+
+---
 
 ## 🏆 Current Roadmap (v2.0)
-- **Week 1-2**: Foundation & Pipeline Phases (✅ Complete)
-- **Week 3**: Delivery & Observability (✅ Complete)
-- **Week 4**: Web Dashboard & SDK Bridge (🔄 In Progress)
-- **Week 5**: Intelligence & Sub-Agents
-- **Week 6**: Polish & Deploy
+- **Phase 1**: Core Pipeline & Foundation (✅ Complete)
+- **Phase 2**: Observability & Real-time Delivery (✅ Complete)
+- **Phase 3**: Dashboard & Intelligence Layer (🔄 In Progress)
+- **Phase 4**: Multi-Agent Orchestration & Sub-Agencies (📅 Q2 2026)
+
+---
+
+© 2026 NexusOS Team. Built for the future of autonomous agent operations.

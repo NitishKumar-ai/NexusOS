@@ -105,12 +105,14 @@ async fn run_agent(
     };
     let _ = state.tx.send(event);
 
-    // Spawn Background Runner
-    let bg_db = db::init_db().await; // Create a new connection for the background task
+    tracing::info!("Starting background mission: {}", task.id);
     let bg_tx = state.tx.clone();
     let bg_task = task.clone();
     tokio::spawn(async move {
+        tracing::info!("Background task started for {}", bg_task.id);
+        let bg_db = db::init_db().await;
         agent::execute_mission(bg_task, bg_db, bg_tx).await;
+        tracing::info!("Background task finished");
     });
 
     Json(serde_json::json!({

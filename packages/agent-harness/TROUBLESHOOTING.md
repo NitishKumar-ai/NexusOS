@@ -1,7 +1,7 @@
 # Troubleshooting Guide
 
-Common issues and solutions for Everything Claude Code (ECC) plugin.
-2
+Common issues and solutions for the NexusOS Agent Harness.
+
 ## Table of Contents
 
 - [Memory & Context Issues](#memory--context-issues)
@@ -221,7 +221,6 @@ python --version
 
 **Solutions:**
 ```bash
-# This is fixed in v1.8.0+ (PR #371)
 # Upgrade plugin to latest version
 
 # Workaround: Wrap dev servers in tmux
@@ -255,7 +254,7 @@ mv ~/.claude/plugins/cache ~/.claude/plugins/cache.backup.$(date +%Y%m%d-%H%M%S)
 mkdir -p ~/.claude/plugins/cache
 
 # Reinstall from marketplace
-# Claude Code → Extensions → Everything Claude Code → Uninstall
+# Claude Code → Extensions → NexusOS Agent Harness → Uninstall
 # Then reinstall from marketplace
 
 # Check Claude Code version
@@ -263,8 +262,8 @@ claude --version
 # Requires Claude Code 2.0+
 
 # Manual install (if marketplace fails)
-git clone https://github.com/affaan-m/everything-claude-code.git
-cp -r everything-claude-code ~/.claude/plugins/ecc
+git clone https://github.com/Inmodel/NexusOS.git
+cp -r NexusOS/packages/agent-harness ~/.claude/plugins/nexusos
 ```
 
 ### Package Manager Detection Fails
