@@ -29,7 +29,9 @@ pub async fn save_task(conn: &Connection, task: &Task) {
     let task = task.clone();
     conn.call(move |conn| {
         conn.execute(
-            "INSERT INTO tasks (id, instruction, repo_url, phase, created_at) VALUES (?1, ?2, ?3, ?4, ?5)",
+            "INSERT INTO tasks (id, instruction, repo_url, phase, created_at) 
+             VALUES (?1, ?2, ?3, ?4, ?5)
+             ON CONFLICT(id) DO UPDATE SET phase=excluded.phase",
             params![
                 task.id.to_string(),
                 task.instruction,

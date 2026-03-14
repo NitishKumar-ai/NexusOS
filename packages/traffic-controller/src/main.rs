@@ -93,10 +93,10 @@ async fn run_agent(
         phase: Phase::P0Trigger,
     };
 
-    // Save to DB
+    // Save to DB (Initial State)
     db::save_task(&state.db, &task).await;
 
-    // Broadcast Event
+    // Broadcast Initial Event
     let event = MissionEvent {
         task_id: task.id,
         phase: Phase::P0Trigger,
@@ -104,6 +104,14 @@ async fn run_agent(
         timestamp: chrono::Utc::now().to_rfc3339(),
     };
     let _ = state.tx.send(event);
+
+    // Spawn Background Runner
+    let bg_db = db::init_db().await; // Create a new connection for the background task
+    let bg_tx = state.tx.clone();
+    let bg_task = task.clone();
+    tokio::spawn(async move {
+        agent::execute_mission(bg_task, bg_db, bg_tx).await;
+    });
 
     Json(serde_json::json!({
         "status": "accepted",
