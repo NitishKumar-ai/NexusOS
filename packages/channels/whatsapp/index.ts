@@ -1,8 +1,6 @@
 // WhatsApp channel adapter for NexusOS
-// Wraps OpenClaw's normalize and resolve-outbound-target utilities
-
-export { normalize } from './normalize';
-export { resolveOutboundTarget } from './resolve-outbound-target';
+// OpenClaw's normalize.ts and resolve-outbound-target.ts are in this directory
+// as implementation reference for WhatsApp JID normalization patterns.
 
 import type { CommandMessage, ChannelResponse } from '../types';
 
