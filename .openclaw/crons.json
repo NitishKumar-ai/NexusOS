@@ -1,0 +1,45 @@
+{
+  "_comment": "OpenClaw cron jobs for NexusOS. All jobs are disabled by default — enable per environment.",
+  "crons": [
+    {
+      "id": "daily-security-scan",
+      "schedule": "0 9 * * *",
+      "timezone": "Asia/Kolkata",
+      "description": "Run AgentShield security scan on NexusOS repo and report findings",
+      "instruction": "Run a full AgentShield security scan on the NexusOS repository. Use ecc-agentshield in deep mode. Report: total issues by severity, any new CRITICAL/HIGH findings, and recommended fixes for the top 3 issues.",
+      "agent": "nexusos-coder",
+      "channel": "telegram",
+      "enabled": false
+    },
+    {
+      "id": "morning-standup",
+      "schedule": "0 10 * * 1-5",
+      "timezone": "Asia/Kolkata",
+      "description": "Daily standup summary (weekdays at 10am IST)",
+      "instruction": "Generate a morning standup summary: (1) missions completed yesterday with outcomes, (2) missions currently active and their phase, (3) any missions awaiting my approval (HITL gates), (4) anything blocked. Keep it to <10 lines.",
+      "agent": "nexusos-coder",
+      "channel": "telegram",
+      "enabled": false
+    },
+    {
+      "id": "repo-health-check",
+      "schedule": "0 */6 * * *",
+      "timezone": "Asia/Kolkata",
+      "description": "Every 6 hours — check NexusOS repo health",
+      "instruction": "Check NexusOS repo health at https://github.com/Inmodel-Labs/NexusOS: (1) any failing CI runs, (2) open PRs older than 48 hours, (3) any stale branches, (4) dependency security alerts. Report only if issues found.",
+      "agent": "nexusos-coder",
+      "channel": "telegram",
+      "enabled": false
+    },
+    {
+      "id": "weekly-review",
+      "schedule": "0 18 * * 5",
+      "timezone": "Asia/Kolkata",
+      "description": "Friday 6pm IST — weekly engineering review",
+      "instruction": "Generate a weekly engineering review: missions completed this week, code quality trends (test coverage, security findings), top 3 accomplishments, top 3 items to prioritize next week. Format as a concise report.",
+      "agent": "nexusos-coder",
+      "channel": "telegram",
+      "enabled": false
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "_comment": "OpenClaw gateway config for NexusOS. Place this file as openclaw.json in your workspace root. Reference: https://openclaw.com/docs/config",
+  "gateway": {
+    "port": 18789,
+    "bind": "loopback",
+    "auth": {
+      "mode": "token"
+    }
+  },
+  "agents": {
+    "defaults": {
+      "workspace": "./packages/agent-harness",
+      "model": "anthropic/claude-sonnet-4-5"
+    },
+    "list": [
+      {
+        "id": "nexusos-coder",
+        "name": "NexusOS",
+        "emoji": "🚀",
+        "soul": "./packages/agent-harness/soul/SOUL.md",
+        "memory": "./packages/agent-harness/soul/MEMORY.md",
+        "tools": ["exec", "file", "browser", "memory", "sessions_send", "web_search"],
+        "skills": ["nexusos-pipeline"],
+        "exec": {
+          "security": "allowlist",
+          "ask": "on-miss"
+        }
+      }
+    ]
+  },
+  "skills": {
+    "load": {
+      "extraDirs": [
+        "./packages/openclaw-skill",
+        "./packages/agent-harness/soul"
+      ]
+    }
+  },
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "token": "${TELEGRAM_BOT_TOKEN}"
+    },
+    "discord": {
+      "enabled": true,
+      "token": "${DISCORD_BOT_TOKEN}"
+    },
+    "whatsapp": {
+      "enabled": false,
+      "comment": "Enable after configuring WhatsApp Business API credentials"
+    }
+  },
+  "tools": {
+    "profile": "default",
+    "exec": {
+      "security": "allowlist",
+      "ask": "on-miss"
+    }
+  },
+  "update": {
+    "channel": "stable"
+  }
+}
