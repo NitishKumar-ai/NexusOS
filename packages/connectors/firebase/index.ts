@@ -1,3 +1,5 @@
+// packages/connectors/firebase/index.ts
+// Firebase connector — build this FIRST (needed for NexusOS state persistence)
 import type { MCPConnector, ConnectorConfig, ConnectorResult } from '../types';
 import { randomUUID } from 'crypto';
 
@@ -8,22 +10,33 @@ export class FirebaseConnector implements MCPConnector {
 
   async connect(config: ConnectorConfig): Promise<void> {
     this.config = config;
-    console.log(`[${this.name}] Connected`);
+    // TODO: initializeApp({ credential: cert({ projectId, privateKey, clientEmail }) })
+    console.log('[Firebase] Connected to project:', config.projectId);
   }
 
   async execute(action: string, params: Record<string, unknown>): Promise<ConnectorResult> {
-    console.log(`[${this.name}] Executing: ${action}`, params);
-    // TODO: Implement Firebase Admin SDK calls
-    // Actions: read_document, write_document, list_collection, delete_document
-    return {
-      success: true,
-      data: null,
-      action_id: randomUUID(),
-      timestamp: new Date().toISOString(),
-    };
+    console.log(`[Firebase] ${action}`, params);
+    // TODO: implement each action
+    switch (action) {
+      case 'firestore.write':
+        // await db.collection(params.collection).doc(params.id).set(params.data)
+        break;
+      case 'firestore.read':
+        // const doc = await db.collection(params.collection).doc(params.id).get()
+        break;
+      case 'firestore.query':
+        // await db.collection(params.collection).where(...).get()
+        break;
+      case 'firestore.delete':
+        // await db.collection(params.collection).doc(params.id).delete()
+        break;
+      default:
+        return { success: false, error: `Unknown action: ${action}`, action_id: randomUUID(), timestamp: new Date().toISOString() };
+    }
+    return { success: true, action_id: randomUUID(), timestamp: new Date().toISOString() };
   }
 
   async disconnect(): Promise<void> {
-    console.log(`[${this.name}] Disconnected`);
+    console.log('[Firebase] Disconnected');
   }
 }

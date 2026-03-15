@@ -1,29 +1,30 @@
+// packages/connectors/figma/index.ts
+// Figma connector — design operations (build last, most complex)
 import type { MCPConnector, ConnectorConfig, ConnectorResult } from '../types';
 import { randomUUID } from 'crypto';
 
 export class FigmaConnector implements MCPConnector {
   name = 'figma';
   version = '1.0.0';
-  private config: ConnectorConfig = {};
+  private token = '';
 
   async connect(config: ConnectorConfig): Promise<void> {
-    this.config = config;
-    console.log(`[${this.name}] Connected`);
+    this.token = config.apiKey ?? '';
+    console.log('[Figma] Connected');
   }
 
   async execute(action: string, params: Record<string, unknown>): Promise<ConnectorResult> {
-    console.log(`[${this.name}] Executing: ${action}`, params);
-    // TODO: Implement Figma REST API calls
-    // Actions: get_file, list_components, export_asset, get_comments
-    return {
-      success: true,
-      data: null,
-      action_id: randomUUID(),
-      timestamp: new Date().toISOString(),
-    };
+    console.log(`[Figma] ${action}`, params);
+    // TODO: implement using Figma REST API
+    // headers: { 'X-Figma-Token': this.token }
+    switch (action) {
+      case 'comment.add':        break; // POST /v1/files/{key}/comments
+      case 'file.getStructure':  break; // GET /v1/files/{key}
+      case 'frame.export':       break; // GET /v1/images/{key}
+      case 'component.list':     break; // GET /v1/files/{key}/components
+    }
+    return { success: true, action_id: randomUUID(), timestamp: new Date().toISOString() };
   }
 
-  async disconnect(): Promise<void> {
-    console.log(`[${this.name}] Disconnected`);
-  }
+  async disconnect(): Promise<void> {}
 }

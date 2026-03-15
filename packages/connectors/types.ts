@@ -1,3 +1,6 @@
+// packages/connectors/types.ts
+// Every connector implements this interface
+
 export interface MCPConnector {
   name: string;
   version: string;
