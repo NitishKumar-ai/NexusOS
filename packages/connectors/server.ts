@@ -3,29 +3,59 @@
 // Runs on port 3002
 
 import { createServer, IncomingMessage, ServerResponse } from 'http';
-import { getConnector } from './index';
+import { getConnector, listConnectors } from './index';
 
 const PORT = process.env.CONNECTOR_PORT ? parseInt(process.env.CONNECTOR_PORT) : 3002;
 
 // Load connector configs from environment
 async function initConnectors() {
-  const firebase = getConnector('firebase');
-  await firebase.connect({
+  // Tier 1 — already working
+  await getConnector('firebase').connect({
     projectId:   process.env.FIREBASE_PROJECT_ID,
     privateKey:  process.env.FIREBASE_PRIVATE_KEY,
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
   });
 
-  const github = getConnector('github');
-  await github.connect({ apiKey: process.env.GITHUB_TOKEN });
+  await getConnector('github').connect({ apiKey: process.env.GITHUB_TOKEN });
+  await getConnector('linear').connect({ apiKey: process.env.LINEAR_API_KEY });
+  await getConnector('figma').connect({ apiKey: process.env.FIGMA_TOKEN });
 
-  const linear = getConnector('linear');
-  await linear.connect({ apiKey: process.env.LINEAR_API_KEY });
+  // Tier 2 — new
+  if (process.env.SLACK_BOT_TOKEN)
+    await getConnector('slack').connect({ apiKey: process.env.SLACK_BOT_TOKEN });
+  if (process.env.NOTION_TOKEN)
+    await getConnector('notion').connect({ apiKey: process.env.NOTION_TOKEN });
+  if (process.env.JIRA_TOKEN)
+    await getConnector('jira').connect({ apiKey: process.env.JIRA_TOKEN, email: process.env.JIRA_EMAIL, domain: process.env.JIRA_DOMAIN });
+  if (process.env.GOOGLE_ACCESS_TOKEN)
+    await getConnector('google-calendar').connect({ apiKey: process.env.GOOGLE_ACCESS_TOKEN });
+  if (process.env.GOOGLE_ACCESS_TOKEN)
+    await getConnector('gmail').connect({ apiKey: process.env.GOOGLE_ACCESS_TOKEN });
 
-  const figma = getConnector('figma');
-  await figma.connect({ apiKey: process.env.FIGMA_TOKEN });
+  // Tier 3
+  if (process.env.VERCEL_TOKEN)
+    await getConnector('vercel').connect({ apiKey: process.env.VERCEL_TOKEN });
+  if (process.env.SUPABASE_URL)
+    await getConnector('supabase').connect({ baseUrl: process.env.SUPABASE_URL, apiKey: process.env.SUPABASE_KEY });
 
-  console.log('[Connectors] All connectors initialized');
+  // Tier 4
+  if (process.env.SENTRY_TOKEN)
+    await getConnector('sentry').connect({ apiKey: process.env.SENTRY_TOKEN, orgSlug: process.env.SENTRY_ORG });
+
+  // Tier 5
+  if (process.env.STRIPE_SECRET_KEY)
+    await getConnector('stripe').connect({ apiKey: process.env.STRIPE_SECRET_KEY });
+  if (process.env.RESEND_API_KEY)
+    await getConnector('resend').connect({ apiKey: process.env.RESEND_API_KEY });
+
+  // Tier 6
+  if (process.env.OPENAI_API_KEY)
+    await getConnector('openai').connect({ apiKey: process.env.OPENAI_API_KEY });
+  if (process.env.PERPLEXITY_API_KEY)
+    await getConnector('perplexity-search').connect({ apiKey: process.env.PERPLEXITY_API_KEY });
+
+  console.log(`[Connectors] ${listConnectors().length} connectors ready`);
+  console.log(`[Connectors] Active: ${listConnectors().join(', ')}`);
 }
 
 function parseBody(req: IncomingMessage): Promise<Record<string, unknown>> {

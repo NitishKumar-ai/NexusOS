@@ -16,6 +16,7 @@ use futures_util::{SinkExt, StreamExt};
 
 mod agent;
 mod db;
+mod connector;
 
 struct AppState {
     db: tokio_rusqlite::Connection,

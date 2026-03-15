@@ -19,12 +19,23 @@ pub async fn execute_mission(
             db::update_phase(&db_conn, &current_task.id.to_string(), $phase).await.ok();
             
             // Broadcast
-            let _ = tx.send(MissionEvent {
+            let event = MissionEvent {
                 task_id: current_task.id,
                 phase: $phase,
                 message: $msg.to_string(),
                 timestamp: Utc::now().to_rfc3339(),
+            };
+            let _ = tx.send(event.clone());
+
+            // Persist to Firebase via Bridge (Async)
+            let conn = crate::connector::ConnectorClient::new();
+            let t = current_task.clone();
+            let e = event.clone();
+            tokio::spawn(async move {
+                let _ = conn.save_mission(&t).await;
+                let _ = conn.log_event(&e).await;
             });
+
             // Small delay for UI effect
             tokio::time::sleep(Duration::from_millis(1500)).await;
         };
