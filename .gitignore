@@ -39,3 +39,4 @@ Thumbs.db
 
 # Docker
 .docker-cache/
+package-lock.json
