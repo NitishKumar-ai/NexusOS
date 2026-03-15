@@ -1,0 +1,27 @@
+name: Connector Request
+description: Request a new MCP connector
+labels: [enhancement, connectors]
+body:
+  - type: input
+    id: service
+    attributes:
+      label: Service name
+      placeholder: e.g. Twilio, Airtable, Shopify
+    validations:
+      required: true
+
+  - type: textarea
+    id: use_case
+    attributes:
+      label: What would agents do with this connector?
+      placeholder: e.g. Send SMS notifications when P8 gate fires
+    validations:
+      required: true
+
+  - type: input
+    id: api_docs
+    attributes:
+      label: API docs URL
+      placeholder: https://docs.example.com/api
+    validations:
+      required: false
