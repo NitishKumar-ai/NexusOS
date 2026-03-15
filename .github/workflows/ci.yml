@@ -1,0 +1,118 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── TypeScript: connectors ────────────────────────────────────
+  connectors-check:
+    name: Connectors — TypeScript
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/connectors
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: packages/connectors/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: TypeScript check
+        run: pnpm tsc --noEmit
+
+      - name: Lint
+        run: pnpm eslint . --ext .ts --max-warnings 0
+        continue-on-error: true  # warn only until lint is clean
+
+  # ── TypeScript: sdk-bridge ────────────────────────────────────
+  sdk-bridge-check:
+    name: SDK Bridge — TypeScript
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/sdk-bridge
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: packages/sdk-bridge/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm tsc --noEmit
+
+  # ── Next.js: dashboard ────────────────────────────────────────
+  dashboard-check:
+    name: Dashboard — Build check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: dashboard
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: dashboard/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm tsc --noEmit
+      - name: Next.js build
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_GATEWAY_URL: http://localhost:3000
+          NEXT_PUBLIC_OPENCLAW_URL: http://localhost:18789
+
+  # ── Connector server boots ────────────────────────────────────
+  connectors-server:
+    name: Connectors — Server starts
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/connectors
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: pnpm install --frozen-lockfile
+      - name: Start server and health check
+        run: |
+          pnpm dev &
+          sleep 5
+          curl -f http://localhost:3002/health || exit 1
+          echo "Connector server healthy"
+
+  # ── Summary gate ─────────────────────────────────────────────
+  ci-pass:
+    name: CI — All checks passed
+    runs-on: ubuntu-latest
+    needs: [connectors-check, sdk-bridge-check, dashboard-check, connectors-server]
+    steps:
+      - run: echo "All CI checks passed ✅"
