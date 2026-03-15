@@ -7,52 +7,106 @@ import { getConnector, listConnectors } from './index';
 
 const PORT = process.env.CONNECTOR_PORT ? parseInt(process.env.CONNECTOR_PORT) : 3002;
 
+async function safeConnect(name: string, config: any) {
+  try {
+    await getConnector(name).connect(config);
+  } catch (err) {
+    console.warn(`[Connectors] Failed to connect ${name}:`, err instanceof Error ? err.message : err);
+  }
+}
+
 // Load connector configs from environment
 async function initConnectors() {
   // Tier 1 — already working
-  await getConnector('firebase').connect({
+  await safeConnect('firebase', {
     projectId:   process.env.FIREBASE_PROJECT_ID,
     privateKey:  process.env.FIREBASE_PRIVATE_KEY,
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
   });
 
-  await getConnector('github').connect({ apiKey: process.env.GITHUB_TOKEN });
-  await getConnector('linear').connect({ apiKey: process.env.LINEAR_API_KEY });
-  await getConnector('figma').connect({ apiKey: process.env.FIGMA_TOKEN });
+  await safeConnect('github', { apiKey: process.env.GITHUB_TOKEN });
+  await safeConnect('linear', { apiKey: process.env.LINEAR_API_KEY });
+  await safeConnect('figma', { apiKey: process.env.FIGMA_TOKEN });
 
-  // Tier 2 — new
+  // Tier 2
   if (process.env.SLACK_BOT_TOKEN)
-    await getConnector('slack').connect({ apiKey: process.env.SLACK_BOT_TOKEN });
+    await safeConnect('slack', { apiKey: process.env.SLACK_BOT_TOKEN });
   if (process.env.NOTION_TOKEN)
-    await getConnector('notion').connect({ apiKey: process.env.NOTION_TOKEN });
+    await safeConnect('notion', { apiKey: process.env.NOTION_TOKEN });
   if (process.env.JIRA_TOKEN)
-    await getConnector('jira').connect({ apiKey: process.env.JIRA_TOKEN, email: process.env.JIRA_EMAIL, domain: process.env.JIRA_DOMAIN });
+    await safeConnect('jira', { apiKey: process.env.JIRA_TOKEN, email: process.env.JIRA_EMAIL, domain: process.env.JIRA_DOMAIN });
   if (process.env.GOOGLE_ACCESS_TOKEN)
-    await getConnector('google-calendar').connect({ apiKey: process.env.GOOGLE_ACCESS_TOKEN });
+    await safeConnect('google-calendar', { apiKey: process.env.GOOGLE_ACCESS_TOKEN });
   if (process.env.GOOGLE_ACCESS_TOKEN)
-    await getConnector('gmail').connect({ apiKey: process.env.GOOGLE_ACCESS_TOKEN });
+    await safeConnect('gmail', { apiKey: process.env.GOOGLE_ACCESS_TOKEN });
 
   // Tier 3
   if (process.env.VERCEL_TOKEN)
-    await getConnector('vercel').connect({ apiKey: process.env.VERCEL_TOKEN });
+    await safeConnect('vercel', { apiKey: process.env.VERCEL_TOKEN });
   if (process.env.SUPABASE_URL)
-    await getConnector('supabase').connect({ baseUrl: process.env.SUPABASE_URL, apiKey: process.env.SUPABASE_KEY });
+    await safeConnect('supabase', { baseUrl: process.env.SUPABASE_URL, apiKey: process.env.SUPABASE_KEY });
 
   // Tier 4
   if (process.env.SENTRY_TOKEN)
-    await getConnector('sentry').connect({ apiKey: process.env.SENTRY_TOKEN, orgSlug: process.env.SENTRY_ORG });
+    await safeConnect('sentry', { apiKey: process.env.SENTRY_TOKEN, orgSlug: process.env.SENTRY_ORG });
 
   // Tier 5
   if (process.env.STRIPE_SECRET_KEY)
-    await getConnector('stripe').connect({ apiKey: process.env.STRIPE_SECRET_KEY });
+    await safeConnect('stripe', { apiKey: process.env.STRIPE_SECRET_KEY });
   if (process.env.RESEND_API_KEY)
-    await getConnector('resend').connect({ apiKey: process.env.RESEND_API_KEY });
+    await safeConnect('resend', { apiKey: process.env.RESEND_API_KEY });
 
   // Tier 6
   if (process.env.OPENAI_API_KEY)
-    await getConnector('openai').connect({ apiKey: process.env.OPENAI_API_KEY });
+    await safeConnect('openai', { apiKey: process.env.OPENAI_API_KEY });
   if (process.env.PERPLEXITY_API_KEY)
-    await getConnector('perplexity-search').connect({ apiKey: process.env.PERPLEXITY_API_KEY });
+    await safeConnect('perplexity-search', { apiKey: process.env.PERPLEXITY_API_KEY });
+
+  // v2 Expansion
+  if (process.env.RAILWAY_TOKEN)
+    await safeConnect('railway', { apiKey: process.env.RAILWAY_TOKEN });
+
+  if (process.env.AWS_ACCESS_KEY_ID)
+    await safeConnect('aws-s3', {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      region: process.env.AWS_REGION || 'us-east-1',
+    });
+
+  if (process.env.CLOUDFLARE_TOKEN)
+    await getConnector('cloudflare').connect({
+      apiKey: process.env.CLOUDFLARE_TOKEN,
+      accountId: process.env.CLOUDFLARE_ACCOUNT_ID,
+    });
+
+  if (process.env.DOCKER_HUB_USERNAME)
+    await getConnector('docker-hub').connect({
+      username: process.env.DOCKER_HUB_USERNAME,
+      apiKey: process.env.DOCKER_HUB_PASSWORD,
+    });
+
+  if (process.env.DD_API_KEY)
+    await getConnector('datadog').connect({
+      apiKey: process.env.DD_API_KEY,
+      appKey: process.env.DD_APP_KEY,
+      site: process.env.DD_SITE || 'datadoghq.com',
+    });
+
+  if (process.env.POSTHOG_API_KEY)
+    await getConnector('posthog').connect({
+      apiKey: process.env.POSTHOG_API_KEY,
+      projectId: process.env.POSTHOG_PROJECT_ID,
+      host: process.env.POSTHOG_HOST || 'https://app.posthog.com',
+    });
+
+  if (process.env.PAGERDUTY_TOKEN)
+    await getConnector('pagerduty').connect({ apiKey: process.env.PAGERDUTY_TOKEN });
+
+  if (process.env.HUGGINGFACE_TOKEN)
+    await getConnector('huggingface').connect({ apiKey: process.env.HUGGINGFACE_TOKEN });
+
+  if (process.env.ANTHROPIC_API_KEY)
+    await getConnector('anthropic-api').connect({ apiKey: process.env.ANTHROPIC_API_KEY });
 
   console.log(`[Connectors] ${listConnectors().length} connectors ready`);
   console.log(`[Connectors] Active: ${listConnectors().join(', ')}`);

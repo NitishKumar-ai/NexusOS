@@ -18,6 +18,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1009.0",
     "firebase-admin": "^13.7.0"
   }
 }

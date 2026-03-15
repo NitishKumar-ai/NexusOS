@@ -14,6 +14,15 @@ import { StripeConnector }         from './stripe';
 import { ResendConnector }         from './resend';
 import { OpenAIConnector }         from './openai';
 import { PerplexityConnector }     from './perplexity-search';
+import { RailwayConnector }        from './railway';
+import { AWSS3Connector }          from './aws-s3';
+import { CloudflareConnector }     from './cloudflare';
+import { DockerHubConnector }      from './docker-hub';
+import { DatadogConnector }        from './datadog';
+import { PosthogConnector }        from './posthog';
+import { PagerDutyConnector }      from './pagerduty';
+import { HuggingFaceConnector }    from './huggingface';
+import { AnthropicConnector }      from './anthropic-api';
 import type { MCPConnector }       from './types';
 
 export type { MCPConnector, ConnectorConfig, ConnectorResult } from './types';
@@ -35,6 +44,15 @@ const connectors: Record<string, MCPConnector> = {
   resend:             new ResendConnector(),
   openai:             new OpenAIConnector(),
   'perplexity-search': new PerplexityConnector(),
+  railway:            new RailwayConnector(),
+  'aws-s3':           new AWSS3Connector(),
+  cloudflare:         new CloudflareConnector(),
+  'docker-hub':       new DockerHubConnector(),
+  datadog:            new DatadogConnector(),
+  posthog:            new PosthogConnector(),
+  pagerduty:          new PagerDutyConnector(),
+  huggingface:        new HuggingFaceConnector(),
+  'anthropic-api':    new AnthropicConnector(),
 };
 
 export function getConnector(name: string): MCPConnector {
