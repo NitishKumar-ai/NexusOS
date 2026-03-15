@@ -1,0 +1,84 @@
+name: Security Scan
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Every Monday 9am UTC
+  push:
+    branches: [main]
+    paths:
+      - 'packages/agent-harness/**'
+      - 'packages/connectors/package.json'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  agentshield:
+    name: AgentShield Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install AgentShield
+        run: pnpm add -g ecc-agentshield
+
+      - name: Run AgentShield scan
+        run: npx ecc-agentshield scan --output json > agentshield-report.json
+        continue-on-error: true  # Don't fail CI — just report
+
+      - name: Upload AgentShield report
+        uses: actions/upload-artifact@v4
+        with:
+          name: agentshield-report
+          path: agentshield-report.json
+          retention-days: 30
+
+      - name: Check for critical findings
+        run: |
+          GRADE=$(cat agentshield-report.json | jq -r '.grade' 2>/dev/null || echo "unknown")
+          echo "AgentShield grade: $GRADE"
+          if [ "$GRADE" = "F" ]; then
+            echo "::error::AgentShield found critical security issues (grade F)"
+            exit 1
+          fi
+
+  npm-audit:
+    name: NPM Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Audit connectors
+        working-directory: packages/connectors
+        run: pnpm install && pnpm audit --audit-level moderate
+        continue-on-error: true
+
+      - name: Audit dashboard
+        working-directory: dashboard
+        run: pnpm install && pnpm audit --audit-level moderate
+        continue-on-error: true
+
+  cargo-audit:
+    name: Cargo Audit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/traffic-controller
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install cargo-audit
+        run: cargo install cargo-audit --locked
+      - name: Run cargo audit
+        run: cargo audit
+        continue-on-error: true
