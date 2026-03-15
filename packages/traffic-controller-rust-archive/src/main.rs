@@ -19,7 +19,7 @@ mod db;
 mod connector;
 
 struct AppState {
-    db: tokio_rusqlite::Connection,
+    db: db::Connection,
     tx: broadcast::Sender<MissionEvent>,
 }
 

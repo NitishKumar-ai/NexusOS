@@ -7,7 +7,7 @@ use chrono::Utc;
 
 pub async fn execute_mission(
     task: Task,
-    db_conn: tokio_rusqlite::Connection,
+    db_conn: crate::db::Connection,
     tx: broadcast::Sender<MissionEvent>,
 ) {
     let mut current_task = task.clone();

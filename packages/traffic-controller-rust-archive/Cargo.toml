@@ -15,6 +15,6 @@ uuid = { version = "1.0", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
 dotenvy = "0.15"
 futures-util = "0.3"
-rusqlite = { version = "0.31", features = ["bundled"] }
-tokio-rusqlite = "0.5"
 reqwest = { version = "0.11", features = ["json"] }
+# rusqlite was here
+# tokio-rusqlite was here
