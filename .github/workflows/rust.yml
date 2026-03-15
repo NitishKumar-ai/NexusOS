@@ -1,0 +1,65 @@
+name: Rust CI
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'packages/traffic-controller/**'
+      - '.github/workflows/rust.yml'
+  pull_request:
+    paths:
+      - 'packages/traffic-controller/**'
+
+concurrency:
+  group: rust-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  rust-ci:
+    name: Rust — Check, Test, Clippy
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/traffic-controller
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            packages/traffic-controller/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('packages/traffic-controller/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: cargo check
+        run: cargo check --all-targets
+
+      - name: cargo fmt
+        run: cargo fmt --all -- --check
+
+      - name: cargo clippy
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: cargo test
+        run: cargo test --all
+        env:
+          DATABASE_URL: ./test.db
+          OPENCLAW_GATEWAY_URL: http://localhost:18789
+
+      - name: cargo build (release)
+        run: cargo build --release
+        if: github.ref == 'refs/heads/main'
