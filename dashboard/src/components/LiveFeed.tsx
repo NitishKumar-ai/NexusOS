@@ -2,13 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { createWebSocket, type MissionEvent } from '../../lib/gateway';
+import { HITLGate } from './HITLGate';
 
 interface LogEntry {
   id: string;
   phase: string;
   message: string;
   timestamp: string;
-  type: 'info' | 'success' | 'warning' | 'error';
+  type: 'info' | 'success' | 'warning' | 'error' | 'gate';
+  mission_id: string;
 }
 
 export default function LiveFeed() {
@@ -19,9 +21,11 @@ export default function LiveFeed() {
       message: 'NexusOS Gateway initialized. Awaiting commands.',
       timestamp: new Date().toLocaleTimeString(),
       type: 'success',
+      mission_id: '',
     },
   ]);
   const [status, setStatus] = useState<'CONNECTED' | 'DISCONNECTED' | 'RECONNECTING'>('DISCONNECTED');
+  const [activeGate, setActiveGate] = useState<{ mission_id: string; phase: string; plan?: string } | null>(null);
 
   useEffect(() => {
     const ws = createWebSocket((event: MissionEvent) => {
@@ -30,8 +34,21 @@ export default function LiveFeed() {
         phase: event.phase,
         message: event.message,
         timestamp: new Date(event.timestamp).toLocaleTimeString(),
-        type: 'info',
+        type: event.event_type === 'hitl_gate' ? 'gate' : 'info',
+        mission_id: event.task_id,
       };
+      
+      if (event.event_type === 'hitl_gate') {
+        setActiveGate({
+          mission_id: event.task_id,
+          phase: event.phase,
+          plan: event.message.includes('plan') ? event.message : undefined
+        });
+      } else if (event.event_type === 'phase_update' && activeGate?.mission_id === event.task_id) {
+        // If mission advanced, close the gate
+        setActiveGate(null);
+      }
+
       setLogs(prev => [newLog, ...prev]);
     });
 
@@ -52,6 +69,16 @@ export default function LiveFeed() {
       </div>
       
       <div className="glass rounded-2xl overflow-hidden min-h-[400px] flex flex-col">
+        {activeGate && (
+          <div className="border-b border-white/10 px-6 pb-6 pt-2">
+            <HITLGate 
+              missionId={activeGate.mission_id}
+              phase={activeGate.phase}
+              plan={activeGate.plan}
+              onDecision={() => setActiveGate(null)}
+            />
+          </div>
+        )}
         <div className="flex-1 p-6 space-y-4 font-mono text-sm overflow-y-auto max-h-[600px]">
           {logs.map((log: LogEntry) => (
             <div key={log.id} className="flex gap-4 group">

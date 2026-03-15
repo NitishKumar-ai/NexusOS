@@ -5,9 +5,19 @@
   "private": true,
   "main": "./index.ts",
   "scripts": {
+    "dev": "tsx watch server.ts",
+    "start": "tsx server.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "typescript": "^5.0.0"
+    "@types/node": "^25.5.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase-admin": "^13.7.0"
   }
 }

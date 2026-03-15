@@ -21,6 +21,17 @@ services:
     depends_on:
       - core-gateway
 
+  connectors:
+    build:
+      context: ./packages/connectors
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    env_file:
+      - ./packages/connectors/.env
+    depends_on:
+      - core-gateway
+
   db:
     image: postgres:15-alpine
     environment:

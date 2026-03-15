@@ -1,158 +1,78 @@
-# 🧠 NexusOS — Skills Registry (from ECC)
+# 🧠 NexusOS — Skills Registry
 
-Source: https://github.com/affaan-m/everything-claude-code/tree/main/skills
-Install location: packages/agent-harness/skills/
-
----
-
-## ✅ TIER 1 — Copy These First (Critical for NexusOS)
-
-These skills directly power the P0–P8 pipeline and core workflows.
-
-| Skill | Why NexusOS needs it |
-|---|---|
-| tdd-workflow/ | Powers P4 Execution phase — RED → GREEN → IMPROVE |
-| security-review/ | Powers P6 Review phase alongside AgentShield |
-| verification-loop/ | Powers P5 Verification — continuous test verification |
-| eval-harness/ | Eval-driven development for agent quality gates |
-| deployment-patterns/ | CI/CD, Docker, health checks — needed for Railway/Vercel deploy |
-| docker-patterns/ | Docker Compose, networking, volumes — needed for infra |
-| backend-patterns/ | API design, database, caching — Rust + Node patterns |
-| api-design/ | REST API patterns — Traffic Controller API design |
-| database-migrations/ | PostgreSQL migration patterns — switching from SQLite |
-| postgres-patterns/ | PostgreSQL optimization — for production Traffic Controller |
-| search-first/ | Research-before-coding — agents verify before acting |
-| autonomous-loops/ | Sequential pipelines, PR loops, DAG orchestration — core to P0-P8 |
-| continuous-learning/ | Auto-extract patterns from sessions |
-| strategic-compact/ | Context management for long agent sessions |
+This registry maps available agent skills to the NexusOS **P0–P8 Orchestration Pipeline**. These skills are installed in `packages/agent-harness/skills/` and are utilized by agents under the direction of the **Rust Traffic Controller**.
 
 ---
 
-## ✅ TIER 2 — Copy These Next (High Value)
+## 🚀 TIER 1 — Pipeline Core (P0–P8)
 
-| Skill | Why NexusOS needs it |
-|---|---|
-| frontend-patterns/ | React/Next.js — dashboard development |
-| e2e-testing/ | Playwright E2E — P5 verification |
-| coding-standards/ | Language best practices across stack |
-| iterative-retrieval/ | Progressive context refinement for sub-agents |
-| cost-aware-llm-pipeline/ | LLM cost optimization — critical for multi-agent setups |
-| agentic-engineering/ | (if exists) Core agentic patterns |
-| security-scan/ | AgentShield /security-scan slash command integration |
-| configure-ecc/ | Interactive installation wizard — reference for nexusos init |
+These skills are critical for the autonomous operation of NexusOS agents and security enforcement.
 
----
-
-## ✅ TIER 3 — Copy for Future Use
-
-| Skill | Future Use |
-|---|---|
-| continuous-learning-v2/ | Instinct-based learning for agents |
-| content-hash-cache-pattern/ | SHA-256 content hash caching |
-| regex-vs-llm-structured-text/ | Decision framework for text parsing |
-| skill-stocktake/ | Audit skills and commands quality |
-
----
-
-## ❌ SKIP THESE — Not relevant to NexusOS
-
-| Skill | Why to skip |
-|---|---|
-| django-patterns/ | Python/Django — NexusOS doesn't use Django |
-| django-security/ | Same |
-| django-tdd/ | Same |
-| django-verification/ | Same |
-| springboot-patterns/ | Java Spring Boot — not in NexusOS stack |
-| springboot-security/ | Same |
-| springboot-tdd/ | Same |
-| springboot-verification/ | Same |
-| swift-actor-persistence/ | iOS/macOS Swift — not relevant |
-| swift-protocol-di-testing/ | Same |
-| swift-concurrency-6-2/ | Same |
-| liquid-glass-design/ | iOS 26 design — not relevant |
-| foundation-models-on-device/ | Apple on-device LLM — not relevant |
-| perl-patterns/ | Perl — not in NexusOS stack |
-| perl-security/ | Same |
-| perl-testing/ | Same |
-| golang-patterns/ | Go — NexusOS uses Rust, not Go |
-| golang-testing/ | Same |
-| cpp-coding-standards/ | C++ — not in NexusOS stack |
-| cpp-testing/ | Same |
-| jpa-patterns/ | Java JPA — not relevant |
-| java-coding-standards/ | Java — not relevant |
-| nutrient-document-processing/ | Document processing API — not relevant |
-| videodb/ | Video/audio processing — not relevant |
-| frontend-slides/ | HTML presentations — not needed |
-| article-writing/ | Content writing — not relevant |
-| content-engine/ | Social content — not relevant |
-| market-research/ | Market research — not relevant |
-| investor-materials/ | Pitch decks — not needed yet |
-| investor-outreach/ | Fundraising — not needed yet |
-
----
-
-## Slash Commands to Keep (from /tmp/ecc/commands/)
-
-| Command | Maps to NexusOS workflow |
-|---|---|
-| /plan | P2 Planning phase trigger |
-| /tdd | P4 Execution phase |
-| /code-review | P6 Review phase |
-| /build-fix | P5 Verification failure recovery |
-| /e2e | P5 E2E testing |
-| /security-scan | P6 AgentShield integration |
-| /verify | P5 Verification loop |
-| /checkpoint | Save P-phase state |
-| /learn | Extract patterns from mission session |
-| /multi-plan | Multi-agent task decomposition |
-| /multi-execute | Parallel agent execution |
-| /orchestrate | Multi-agent coordination |
-| /harness-audit | Audit harness reliability |
-| /loop-start | Start controlled agentic loop |
-| /loop-status | Check loop status |
-| /quality-gate | Run quality checks |
-| /refactor-clean | Code cleanup |
-| /update-docs | Documentation sync |
-| /sessions | Session history management |
-
----
-
-## MCP Configs to Adapt (from /tmp/ecc/mcp-configs/)
-
-The `mcp-servers.json` includes configs for:
-
-| MCP Server | Keep for NexusOS? | Notes |
+| Skill | Pipeline Phase | NexusOS Use Case |
 |---|---|---|
-| GitHub | ✅ YES | Core connector — P1 Git operations |
-| Supabase | ⚠️ MAYBE | Replace with Firebase for NexusOS |
-| Vercel | ✅ YES | Dashboard deployment |
-| Railway | ✅ YES | Backend hosting option |
-| Sequential Thinking | ✅ YES | Agent reasoning enhancement |
-| Memory | ✅ YES | Session memory persistence |
-| Context7 | ✅ YES | Docs/context lookup |
-| Others | 🔍 Review | Evaluate per connector |
-
-Adapt: Replace API keys with NexusOS Firebase credentials in copied configs.
+| **search-first/** | P1 Context Pull | Research-before-coding; agents verify context before acting. |
+| **autonomous-loops/** | P2 Planning | Core P0-P8 coordination; parallel agent execution (DAG). |
+| **tdd-workflow/** | P4 Execution | Powers the RED → GREEN → IMPROVE coding cycle. |
+| **verification-loop/** | P5 Verification | Continuous test execution and failure recovery. |
+| **security-review/** | P6 Review | Multi-stage review using **AgentShield** 102-rule scan. |
+| **deployment-patterns/** | P7 Commit/Deploy | CI/CD, Docker, and health checks for Railway/Vercel. |
+| **continuous-learning/** | P8 Learn | Post-mission pattern extraction and instinct refinement. |
+| **strategic-compact/** | Cross-phase | Context management for long-running agent sessions. |
 
 ---
 
-## Hooks to Keep (from /tmp/ecc/hooks/hooks.json)
+## 🛠️ TIER 2 — Connectors & Infrastructure
 
-| Hook | Trigger | NexusOS Use |
+| Skill | Category | NexusOS Use Case |
 |---|---|---|
-| SessionStart | Session begins | Load mission context |
-| SessionEnd / Stop | Session ends | Save mission state to Firebase |
-| PreToolUse (bash) | Before bash command | AgentShield command gating |
-| PostToolUse (edit) | After file edit | TypeScript check + format |
-| PreToolUse (write) | Before file write | Secret detection scan |
-| strategic-compact | Context high | Suggest compaction before overflow |
+| **api-design/** | Backend | Traffic Controller REST API design (Rust + Axum). |
+| **database-migrations/** | Backend | PostgreSQL/PostGIS migration patterns and optimization. |
+| **frontend-patterns/** | Dashboard | Next.js 14 / Tailwind UI patterns for Mission Control. |
+| **e2e-testing/** | Verification | Playwright E2E for P5 verification of UI changes. |
+| **sdk-bridge-adapters/** | Integration | Adapters for Claude Code, LangChain, and LangGraph. |
+| **cost-aware-pipeline/** | Optimization | LLM cost management for multi-agent loops. |
+| **security-scan/** | Security | Integration for `/security-scan` slash command via AgentShield. |
 
 ---
 
-## Contexts to Use (from /tmp/ecc/contexts/)
+## 🕹️ NexusOS Slash Commands
 
-| Context File | When to inject |
-|---|---|
-| dev.md | Default — agent doing development work (P3, P4) |
-| review.md | P6 Review phase — agent reviewing code |
-| research.md | P1 Context Pull and P2 Planning — agent researching |
+Slash commands are the primary trigger for remote commanding via **Discord**, **WhatsApp**, and **Telegram**.
+
+| Command | Pipeline Trigger | Action |
+|---|---|---|
+| `/run [task]` | **P0 Start** | Initialize a new mission and enter P1/P2. |
+| `/plan` | **P2 Planning** | Force re-plan or decompose complex tasks. |
+| `/gate-approve` | **P2/P8 HITL** | Human-in-the-loop approval to proceed (Planning or Commit). |
+| `/gate-reject` | **P2/P8 HITL** | Stop pipeline and return to previous phase with feedback. |
+| `/status` | **Monitor** | Get real-time health and progress of all active agents. |
+| `/verify` | **P5 Verify** | Manually trigger the verification loop. |
+| `/incident-report` | **Security** | Pull AgentShield violation logs for a specific session. |
+| `/learn` | **P8 Learn** | Manually trigger pattern extraction from the last session. |
+
+---
+
+## 🔌 MCP Connector Registry
+
+NexusOS provides a unified registry for MCP connectors, managed by the `sdk-bridge`.
+
+| Connector | Status | NexusOS Mission |
+|---|---|---|
+| **Linear** | ✅ Live | Query/Update tickets; P1 context pull from issues. |
+| **Firebase** | ✅ Live | Auth management; P8 state persistence to Firestore. |
+| **GitHub** | ✅ Live | PR management; P7 commit operations via API. |
+| **Figma** | 🔄 Beta | Design-to-code; frame analysis for UI updates. |
+| **PostgreSQL** | 📋 Planned | Direct vector search and long-term memory access. |
+
+---
+
+## 🛡️ Security Hooks (AgentShield)
+
+Registered in `packages/agent-harness/hooks/hooks.json`.
+
+| Hook | Type | Protection |
+|---|---|---|
+| **PreToolUse (bash)** | Gating | Prevents unauthorized system commands. |
+| **PreToolUse (write)** | Scan | Secret detection and unauthorized file access block. |
+| **PostToolUse (edit)** | Verify | Auto-runs lints and formatting after edits. |
+| **SessionEnd** | Persistence | Securely flushes trace logs to Firebase. |
