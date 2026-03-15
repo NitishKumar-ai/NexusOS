@@ -7,7 +7,8 @@
 // OpenClaw routes the message here. We forward it to the Rust Traffic Controller,
 // which runs the P0-P8 pipeline and delivers results back through OpenClaw.
 
-const NEXUSOS_GATEWAY = process.env.NEXUSOS_GATEWAY_URL ?? 'http://localhost:3000';
+const NEXUSOS_GATEWAY = process.env.NEXUSOS_GATEWAY_URL
+  ?? 'https://nexusos-gateway.nitishkumar44470.workers.dev';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

@@ -4,7 +4,7 @@
 // Import from here. Never call fetch() directly in a component.
 // ─────────────────────────────────────────────────────────────────
 
-const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL ?? 'http://localhost:3000';
+const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL ?? 'https://nexusos-gateway.nitishkumar44470.workers.dev';
 const WS_URL = GATEWAY_URL.replace(/^http/, 'ws');
 
 // ── Types ──────────────────────────────────────────────────────────
@@ -113,7 +113,7 @@ export function createWebSocket(onEvent: (event: MissionEvent) => void): WebSock
 
 export async function openClawHealth(): Promise<{ connected: boolean }> {
   try {
-    const res = await fetch('http://localhost:18789/health');
+    const res = await fetch('https://nexus-openclaw.nitishkumar44470.workers.dev/health');
     return { connected: res.ok };
   } catch {
     return { connected: false };
