@@ -1,102 +1,108 @@
-# NexusOS Agent Pipeline
+# 🚀 NexusOS — Agent Mission Control
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0--beta-blue)](docs/prd.md)
+> Control your AI agents from Discord, WhatsApp, and Telegram.
+> Built on Rust + ECC + OpenClaw.
 
-NexusOS is an enterprise-grade, event-driven **Agent Mission Control** system designed for high-performance orchestration of autonomous AI agents. It provides a centralized control plane for commanding, monitoring, and securing agents across diverse environments—from local development to cloud-scale deployments.
-
-## 🌟 Why NexusOS?
-
-NexusOS solves the fragmentation and visibility challenges of modern AI agent workflows:
-- **Centralized Command**: A unified gateway (Traffic Controller) to route tasks to specialized agents.
-- **Remote Visibility**: Real-time observability via WebSockets and direct-to-phone notifications (Telegram/PWA).
-- **Hardened Security**: The `AgentShield` framework enforces granular security rules and human-in-the-loop approvals.
-- **Systematic Execution**: A strict P0-P8 pipeline ensures predictable outcomes and verification.
+```
+/mission Add user authentication to the API
+```
+*Sent from Discord → agent plans, codes with TDD, passes AgentShield security scan,
+asks your approval before committing. All from your phone.*
 
 ---
 
-## 🏗️ High-Level Architecture
+## What It Does
 
-```mermaid
-graph TD
-    User([User: Phone/Web/CLI]) --> Gateway[NexusOS Traffic Controller - Rust]
-    Gateway --> Pipeline[P0-P8 Phase Runner]
-    Pipeline --> Agents[NexusOS Agent Harness]
-    
-    subgraph "Agent Harness"
-        Agents --> Planner
-        Agents --> Architect
-        Agents --> Coder
-    end
-    
-    Pipeline --> MCP[MCP Connectors: Linear/GitHub/Figma]
-    Pipeline --> Delivery[Delivery: Telegram/WebSocket/PWA]
-    
-    style Gateway fill:#f9f,stroke:#333,stroke-width:2px
-    style Pipeline fill:#bbf,stroke:#333,stroke-width:2px
+NexusOS gives you a **mission control center** for AI coding agents. Every task follows
+a structured P0-P8 pipeline with two mandatory human approval gates — you see the plan
+before any code is written, and you approve before anything is committed.
+
+```
+You (Discord/WhatsApp/Telegram)
+    → OpenClaw Gateway (all channels)
+        → NexusOS Rust Traffic Controller
+            → ECC Agent Harness (18 agents, 94 skills)
+                → Your codebase
 ```
 
----
+## Architecture
 
-## 📁 Project Structure
+| Layer | Technology | Purpose |
+|---|---|---|
+| Channels | OpenClaw | Discord, WhatsApp, Telegram, Slack |
+| Gateway | Rust/Axum | P0-P8 pipeline orchestration |
+| Agents | ECC Harness | 18 specialized coding agents |
+| Security | AgentShield | 102 rules, block rogue actions |
+| Connectors | TypeScript | Linear, Firebase, Figma, GitHub |
+| Dashboard | Next.js 14 | Mission control UI (Vercel) |
 
-NexusOS is organized as a **pnpm monorepo** for optimal dependency management and internal integration.
+## The P0-P8 Pipeline
 
-```text
-nexusos/
-├── docs/                      # Centralized Wiki, Architecture, and PRD
-├── packages/
-│   ├── traffic-controller/    # High-performance Rust (Axum) Gateway
-│   ├── agent-harness/         # Core agent definitions and skills
-│   ├── sdk-bridge/            # Adapters for custom engine integration
-│   └── connectors/            # Model Context Protocol (MCP) implementations
-├── dashboard/                 # Next.js 14 Real-time Observability UI
-└── docker-compose.yml         # Local infrastructure (Persistence & Cache)
+```
+P0 Receive mission
+P1 Pull code from GitHub
+P2 ⏸ PLAN — you approve before any code is written
+P3 Architecture design
+P4 TDD implementation (tests first, always)
+P5 Verification (tests must pass)
+P6 AgentShield security scan
+P7 Deliver results
+P8 ⏸ COMMIT — you approve before anything is committed
 ```
 
----
+## Quick Start
 
-## 🚀 Quick Start
-
-### 1. Prerequisites
-- **Rust** (Stable) & **Node.js** (v18+)
-- **pnpm**: `npm install -g pnpm`
-- **Claude CLI**: `npm install -g @anthropic-ai/claude-code`
-
-### 2. Installation
 ```bash
-git clone https://github.com/Inmodel/NexusOS.git
+# Clone
+git clone https://github.com/Inmodel-Labs/NexusOS.git
 cd NexusOS
-pnpm install
+
+# One-command setup
+bash scripts/init.sh
+
+# Start all services
+Terminal 1: cd packages/traffic-controller && cargo run
+Terminal 2: cd packages/connectors && pnpm dev
+Terminal 3: cd dashboard && pnpm dev
+
+# Open dashboard
+http://localhost:3001
 ```
 
-### 3. Launch
-```bash
-# Start infrastructure
-docker-compose up -d
+## Commands (Discord / WhatsApp / Telegram)
 
-# Start the Traffic Controller
-cd packages/traffic-controller
-cargo run
+```
+/mission <task>         Start a coding mission
+/status                 List active missions
+/status <id>            Get mission details
+/approve <id>           Approve plan (P2) or commit (P8)
+/reject <id>            Stop a mission
+/help                   Show commands
 ```
 
+## MCP Connectors
+
+| Connector | Actions |
+|---|---|
+| Firebase | Read/write Firestore, mission state persistence |
+| GitHub | Create issues/PRs, read/write files |
+| Linear | Create/update tickets from mission results |
+| Figma | Post comments, read component structure |
+
+## Stack
+
+- **Rust/Axum** — Traffic Controller gateway (port 3000)
+- **Next.js 14** — Dashboard (Vercel, port 3001)
+- **TypeScript** — Connectors + SDK bridge (port 3002)
+- **OpenClaw** — Multi-channel gateway (port 18789)
+- **ECC** — Agent harness (18 agents, 94 skills)
+- **AgentShield** — Security layer (102 rules)
+- **PostgreSQL + Redis** — Production data layer (Docker)
+
+## License
+
+Apache-2.0
+
 ---
 
-## 📖 Key Documentation
-
-- **[Architecture Deep Dive](docs/Architecture.md)**: Component interactions and data flow.
-- **[Execution Pipeline](docs/Execution-Pipeline.md)**: Detailed breakdown of the P0-P8 lifecycle.
-- **[Product Requirements (PRD)](docs/prd.md)**: The definitive roadmap and feature specification.
-- **[Security Model](docs/Security.md)**: AgentShield and Human-in-the-Loop governance.
-
----
-
-## 🏆 Current Roadmap (v2.0)
-- **Phase 1**: Core Pipeline & Foundation (✅ Complete)
-- **Phase 2**: Observability & Real-time Delivery (✅ Complete)
-- **Phase 3**: Dashboard & Intelligence Layer (🔄 In Progress)
-- **Phase 4**: Multi-Agent Orchestration & Sub-Agencies (📅 Q2 2026)
-
----
-
-© 2026 NexusOS Team. Built for the future of autonomous agent operations.
+*Built by [Inmodel-Labs](https://github.com/Inmodel-Labs)*
