@@ -1,0 +1,30 @@
+name = "nexusos-gateway"
+main = "src/index.ts"
+compatibility_date = "2026-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+account_id = "6c9134768cf146bbacd6d541f3b8c8b3"
+
+[[workflows]]
+name = "nexusos-pipeline"
+binding = "NEXUSOS_PIPELINE"
+class_name = "NexusOSPipeline"
+script_name = "nexusos-workflow"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "nexusos-db"
+database_id = "6c6be3a0-d1ab-43b8-b391-18fdd6927974"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "5eb1f9d83e9c499b8f6d8861edb6eac2"
+preview_id = "54eeb867792e4a05b9cf7f25c094afdd"
+
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "nexusos-artifacts"
+
+[vars]
+CONNECTORS_URL = "https://nexusos-connectors.nitishkumar44470.workers.dev"
+OPENCLAW_GATEWAY_URL = "https://nexus-openclaw.nitishkumar44470.workers.dev"
