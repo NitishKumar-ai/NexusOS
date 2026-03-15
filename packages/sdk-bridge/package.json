@@ -1,13 +1,9 @@
 {
   "name": "@nexusos/sdk-bridge",
   "version": "1.0.0",
-  "description": "NexusOS multi-SDK adapter layer — Claude Code, LangChain, LangGraph, Python",
   "private": true,
   "main": "./index.ts",
   "scripts": {
     "typecheck": "tsc --noEmit"
-  },
-  "devDependencies": {
-    "typescript": "^5.0.0"
   }
 }

@@ -1,3 +1,6 @@
+// packages/sdk-bridge/adapters/types.ts
+// Universal interface — every SDK adapter implements this
+
 export interface AgentAdapter {
   name: string;
   sdk: 'claude-code' | 'langchain' | 'langgraph' | 'python';
@@ -11,6 +14,7 @@ export interface AgentTask {
   context?: Record<string, unknown>;
   session_id: string;
   agent_name?: string;
+  phase?: string;
 }
 
 export interface AgentResult {
@@ -20,4 +24,5 @@ export interface AgentResult {
   timestamp: string;
   tool_calls: unknown[];
   mcp_actions: unknown[];
+  phase_completed?: string;
 }

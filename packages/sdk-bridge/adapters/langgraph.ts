@@ -1,3 +1,4 @@
+// packages/sdk-bridge/adapters/langgraph.ts
 import type { AgentAdapter, AgentTask, AgentResult } from './types';
 import { randomUUID } from 'crypto';
 
@@ -6,11 +7,11 @@ export class LangGraphAdapter implements AgentAdapter {
   sdk = 'langgraph' as const;
 
   async invoke(task: AgentTask): Promise<AgentResult> {
-    console.log(`[LangGraphAdapter] Invoking: ${task.instruction}`);
-    // TODO: Implement LangGraph agent invocation
+    console.log(`[LangGraph] Invoking: ${task.instruction.slice(0, 80)}...`);
+    // TODO: Integrate with LangGraph state machine
     return {
       status: 'success',
-      result: `[stub] langgraph invoked for session ${task.session_id}`,
+      result: `[LangGraph stub] Task received: ${task.instruction}`,
       trace_id: randomUUID(),
       timestamp: new Date().toISOString(),
       tool_calls: [],
@@ -19,7 +20,6 @@ export class LangGraphAdapter implements AgentAdapter {
   }
 
   async healthCheck(): Promise<boolean> {
-    console.log('[LangGraphAdapter] Health check');
-    return true;
+    return true; // TODO: ping LangGraph service
   }
 }

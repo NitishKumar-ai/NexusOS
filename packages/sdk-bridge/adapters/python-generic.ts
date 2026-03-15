@@ -1,16 +1,17 @@
+// packages/sdk-bridge/adapters/python-generic.ts
 import type { AgentAdapter, AgentTask, AgentResult } from './types';
 import { randomUUID } from 'crypto';
 
 export class PythonAdapter implements AgentAdapter {
-  name = 'python';
+  name = 'python-generic';
   sdk = 'python' as const;
 
   async invoke(task: AgentTask): Promise<AgentResult> {
-    console.log(`[PythonAdapter] Invoking: ${task.instruction}`);
-    // TODO: Implement Python subprocess / API call for generic Python agents
+    console.log(`[Python] Invoking: ${task.instruction.slice(0, 80)}...`);
+    // TODO: Call custom Python agent via HTTP or subprocess
     return {
       status: 'success',
-      result: `[stub] python-generic invoked for session ${task.session_id}`,
+      result: `[Python stub] Task received: ${task.instruction}`,
       trace_id: randomUUID(),
       timestamp: new Date().toISOString(),
       tool_calls: [],
@@ -19,7 +20,6 @@ export class PythonAdapter implements AgentAdapter {
   }
 
   async healthCheck(): Promise<boolean> {
-    console.log('[PythonAdapter] Health check');
-    return true;
+    return true; // TODO: ping Python agent service
   }
 }

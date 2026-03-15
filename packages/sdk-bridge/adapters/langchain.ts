@@ -1,3 +1,4 @@
+// packages/sdk-bridge/adapters/langchain.ts
 import type { AgentAdapter, AgentTask, AgentResult } from './types';
 import { randomUUID } from 'crypto';
 
@@ -6,11 +7,11 @@ export class LangChainAdapter implements AgentAdapter {
   sdk = 'langchain' as const;
 
   async invoke(task: AgentTask): Promise<AgentResult> {
-    console.log(`[LangChainAdapter] Invoking: ${task.instruction}`);
-    // TODO: Implement LangChain agent invocation
+    console.log(`[LangChain] Invoking: ${task.instruction.slice(0, 80)}...`);
+    // TODO: Integrate with LangChain agent executor
     return {
       status: 'success',
-      result: `[stub] langchain invoked for session ${task.session_id}`,
+      result: `[LangChain stub] Task received: ${task.instruction}`,
       trace_id: randomUUID(),
       timestamp: new Date().toISOString(),
       tool_calls: [],
@@ -19,7 +20,6 @@ export class LangChainAdapter implements AgentAdapter {
   }
 
   async healthCheck(): Promise<boolean> {
-    console.log('[LangChainAdapter] Health check');
-    return true;
+    return true; // TODO: ping LangChain service
   }
 }
