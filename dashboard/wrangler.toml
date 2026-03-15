@@ -1,0 +1,9 @@
+name = "nexusos-dashboard"
+compatibility_date = "2026-01-01"
+pages_build_output_dir = ".next"
+
+account_id = "6c9134768cf146bbacd6d541f3b8c8b3"
+
+[vars]
+NEXT_PUBLIC_GATEWAY_URL = "https://api.nexusos.dev"
+NEXT_PUBLIC_CONNECTORS_URL = "https://connectors.nexusos.dev"
